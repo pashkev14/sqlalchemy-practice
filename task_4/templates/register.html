@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ css }}">
+<h1>Форма регистрации</h1>
+<form action="" method="post" novalidate>
+        <div>
+            {{ form.csrf_token }}
+        </div>
+        {% for field in form if field.name != 'csrf_token' %}
+            <div>
+                <p>
+                {{ field.label() }}<br>
+                {{ field() }}<br>
+                {% for error in field.errors %}
+                    <div class="error">{{ error }}</div>
+                {% endfor %}
+                </p>
+            </div>
+        {% endfor %}
+    </form>
+{% endblock %}
