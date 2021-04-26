@@ -2,10 +2,15 @@ def main():
     file = input()
     global_init(file)
     db_sess = create_session()
-    max_team_size = max(list(map(lambda x: len(x.collaborators.split(", ")), db_sess.query(Jobs))))
-    for job in db_sess.query(Jobs).filter(len(Jobs.collaborators.split(', ')) == max_team_size):
-        for user in db_sess.query(User).filter(job.team_leader == User.id):
-            print(user.surname, user.name)
+    teams = db_sess.query(Jobs).all()
+    max_collabs = max([len(i.collaborators.split(', ')) for i in teams])
+    team_leads = []
+    for i in teams:
+        if len(i.collaborators.split(', ')) == max_collabs:
+            leader = db_sess.query(User).filter(User.id == i.team_leader).first()
+            if f"{leader.name} {leader.surname}" not in team_leads:
+                team_leads.append(f"{leader.name} {leader.surname}")
+    print('\n'.join(team_leads))
 
 
 if __name__ == '__main__':
